@@ -16,6 +16,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: List files in current directory
+        run: ls -la
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
       - name: Add jks file
         run: |
           set -e
@@ -107,4 +116,4 @@ jobs:
           name: ${{ env.release_title }}
           body: ${{ env.changelog }}
           generate_release_notes: true
-          prerelease: true    
+          prerelease: true
