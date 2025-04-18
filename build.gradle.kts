@@ -47,7 +47,7 @@ allprojects {
                 val flavor = productFlavors.joinToString("-") { it.name }
 
                 (this as BaseVariantOutputImpl).outputFileName =
-                    "tv-android-${project.name}-$ver-${abi}-sdk$minSdk-${flavor}.apk"
+                    "mytv-android-${project.name}-$ver-${abi}-sdk$minSdk-${flavor}.apk"
             }
         }
     }
