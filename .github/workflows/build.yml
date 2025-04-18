@@ -37,15 +37,41 @@ jobs:
           fi
           rm encoded_key
 
+      - name: Decode SIGNING_PROPERTIES
+        run: |
+          echo "${{ secrets.SIGNING_PROPERTIES }}" > ./encoded_signing_properties
+          if base64 -d -i encoded_signing_properties > signing.properties; then
+            echo "Successfully decoded signing properties"
+          else
+            echo "Failed to decode signing properties"
+            exit 1
+          fi
+          rm encoded_signing_properties
+
+      - name: Set signing properties as environment variables
+        run: |
+          store_file=$(grep 'storeFile=' signing.properties | cut -d'=' -f2 | tr -d '\r\n')
+          store_password=$(grep'storePassword=' signing.properties | cut -d'=' -f2 | tr -d '\r\n')
+          key_alias=$(grep 'keyAlias=' signing.properties | cut -d'=' -f2 | tr -d '\r\n')
+          key_password=$(grep 'keyPassword=' signing.properties | cut -d'=' -f2 | tr -d '\r\n')
+          echo "STORE_FILE=$store_file" >> $GITHUB_ENV
+          echo "STORE_PASSWORD=$store_password" >> $GITHUB_ENV
+          echo "KEY_ALIAS=$key_alias" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=$key_password" >> $GITHUB_ENV
+
       - name: Add SHORT_SHA Environment Variable
         id: short-sha
         shell: bash
         run: echo "short_sha=`git rev-parse --short HEAD`" >> $GITHUB_ENV
 
       - name: Build with Gradle (Release)
-        if: inputs.branch == 'main'
+        if: inputs.branch =='main'
         env:
           VERSION_CODE: ${{ github.run_number }}
+          STORE_FILE: ${{ env.STORE_FILE }}
+          STORE_PASSWORD: ${{ env.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ env.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ env.KEY_PASSWORD }}
         run: ./gradlew :tv:assembleRelease
 
       - name: Build with Gradle (Dev)
@@ -54,6 +80,10 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           VERSION_CODE: ${{ github.run_number }}
+          STORE_FILE: ${{ env.STORE_FILE }}
+          STORE_PASSWORD: ${{ env.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ env.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ env.KEY_PASSWORD }}
         run: ./gradlew :tv:assembleDebug --warning-mode=all
 
       - name: Upload Artifact
@@ -69,7 +99,7 @@ jobs:
           mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
       - name: Move Metadata (Release)
-        if: github.event_name == 'workflow_dispatch' && inputs.branch == 'main'
+        if: github.event_name == 'workflow_dispatch' && inputs.branch =='main'
         run: |
           mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
@@ -87,7 +117,7 @@ jobs:
           echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
 
       - name: Gen Tag(Release)
-        if: github.event_name == 'workflow_dispatch' && inputs.branch == 'main'
+        if: github.event_name == 'workflow_dispatch' && inputs.branch =='main'
         run: |
           echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
 
@@ -102,7 +132,7 @@ jobs:
           echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
 
       - name: Publish Release
-        if: github.event_name == 'workflow_dispatch' && inputs.branch == 'main'
+        if: github.event_name == 'workflow_dispatch' && inputs.branch =='main'
         uses: softprops/action-gh-release@v2
         with:
           files: tv/build/outputs/apk/release/*.apk
