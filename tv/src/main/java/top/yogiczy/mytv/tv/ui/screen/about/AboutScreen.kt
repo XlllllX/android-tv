@@ -150,7 +150,7 @@ fun AboutScreen(
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
                     headlineContent = { Text("电视直播") },
-                    supportingContent = { Text("android-tv") },
+                    supportingContent = { Text(" android-tv") },
                     trailingContent = {
                         Icon(
                             Icons.AutoMirrored.Default.OpenInNew,
