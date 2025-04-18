@@ -109,12 +109,12 @@ fun MainContent(
                         )
                     }
                 },
-                onLongUp = { mainContentState.isChannelLineScreenVisible = true },
+                onLongUp = { mainContentState.isEpgScreenVisible = true },
                 onSelect = { mainContentState.isChannelScreenVisible = true },
                 onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
                 onSettings = { mainContentState.isQuickOpScreenVisible = true },
-                onLongLeft = { mainContentState.isEpgScreenVisible = true },
-                onLongRight = { mainContentState.isIptvSourceScreenVisible = true },
+                onLongLeft = { mainContentState.isIptvSourceScreenVisible = true },
+                onLongRight = { mainContentState.isChannelLineScreenVisible = true },
                 onLongDown = { mainContentState.isVideoPlayerControllerScreenVisible = true },
                 onNumber = { channelNumberSelectState.input(it) },
             )
