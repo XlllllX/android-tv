@@ -109,7 +109,7 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("天光云影交流群 Telegram") },
+                    headlineContent = { Text("沟通交流") },
                     trailingContent = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -149,8 +149,8 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("向天光云影作者赞赏") },
-                    supportingContent = { Text("仅支持微信赞赏码") },
+                    headlineContent = { Text("电视直播") },
+                    supportingContent = { Text("android-tv") },
                     trailingContent = {
                         Icon(
                             Icons.AutoMirrored.Default.OpenInNew,
