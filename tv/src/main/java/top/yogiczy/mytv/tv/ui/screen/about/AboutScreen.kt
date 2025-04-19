@@ -100,7 +100,7 @@ fun AboutScreen(
                     visibleProvider = { visible },
                     onDismissRequest = { visible = false },
                     text = Constants.APP_REPO,
-                    description = "扫码前往代码仓库",
+                    description = "代码仓库",
                 )
             }
 
@@ -109,7 +109,7 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("沟通交流") },
+                    headlineContent = { Text("交流") },
                     trailingContent = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -148,9 +148,42 @@ fun AboutScreen(
                 var visible by remember { mutableStateOf(false) }
 
                 ListItem(
+                    modifier = Modifier.handleKeyEvents(onSelect = {
+                        visible = true
+                    }),
+                    headlineContent = { Text("设备ID") },
+                    trailingContent = {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(Globals.deviceId)
+
+                            Icon(
+                                Icons.AutoMirrored.Default.OpenInNew,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        }
+                    },
+                    selected = false,
+                    onClick = {},
+                )
+
+                QrcodePopup(
+                    visibleProvider = { visible },
+                    onDismissRequest = { visible = false },
+                    text = Globals.deviceId,
+                )
+            }
+
+            item {
+                var visible by remember { mutableStateOf(false) }
+
+                ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
                     headlineContent = { Text("电视直播") },
-                    supportingContent = { Text("Android-tv") },
+                    supportingContent = { Text("tv-android") },
                     trailingContent = {
                         Icon(
                             Icons.AutoMirrored.Default.OpenInNew,

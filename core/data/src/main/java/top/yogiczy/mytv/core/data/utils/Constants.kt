@@ -17,10 +17,10 @@ object Constants {
     /**
      * 应用 代码仓库
      */
-    const val APP_REPO = "hhttps://github.com/mytv-android/mytv-android"
+    const val APP_REPO = "https://github.com/mytv-android/mytv-android"
 
     /**
-     * 交流群
+     * 交流群 telegram
      */
     const val GROUP_TELEGRAM = "https://github.com/mytv-android/mytv-android"
 
@@ -84,9 +84,9 @@ object Constants {
      * Git最新版本信息
      */
     val GIT_RELEASE_LATEST_URL = mapOf(
-        "stable" to "https://github.com",
-        "beta" to "https://github.com",
-        "dev" to "https://github.com",
+        "stable" to "https://gitee.com",
+        "beta" to "https://gitee.com",
+        "dev" to "https://gitee.com",
     )
 
     /**

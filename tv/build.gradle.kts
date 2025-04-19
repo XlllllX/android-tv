@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.sentry.android.gradle)
 }
 
 
@@ -18,7 +19,7 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.github.mytv.android"
+        applicationId = "com.github.tv.android"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = "${System.getenv("VERSION_CODE")}".toInt()
@@ -27,6 +28,7 @@ android {
             useSupportLibrary = true
         }
 
+        buildConfigField("String", "SENTRY_DSN", "\"${getProperty("sentry.dsn") ?: System.getenv("SENTRY_DSN")}\"")
     }
 
     buildTypes {
@@ -45,6 +47,7 @@ android {
         }
         debug{
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -141,8 +144,8 @@ dependencies {
     implementation(libs.androidx.media3.datasource.rtmp)
     implementation(libs.androidx.media3.exoplayer.smoothstreaming)
 
-    implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.0.0")
-    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.0.0")
+    implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.1.0")
+    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.1.0")
 
     // 二维码
     implementation(libs.qrose)
@@ -159,14 +162,21 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:util"))
     // implementation(project(":allinone"))
-    implementation(project(":gsyvideoplayer-ex_so"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
-
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+}
+
+sentry {
+    org.set("mytv-android")
+    projectName.set("mytv")
+    authToken.set(getProperty("sentry.auth_token") ?: System.getenv("SENTRY_AUTH_TOKEN"))
+    ignoredBuildTypes.set(setOf("debug"))
+    autoUploadProguardMapping = false
 }
 
 fun getProperty(key: String): String? {
