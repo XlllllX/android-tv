@@ -131,12 +131,27 @@ jobs:
         run: |
           echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
 
+      - name: Create Tag (Release)
+        if: github.event_name == 'workflow_dispatch' && inputs.branch =='main'
+        run: |
+          tag="v${{ env.info_version_name }}"
+          git tag $tag
+          git push origin $tag
+
+      - name: Create Tag (Beta/Dev)
+        if: github.event_name == 'workflow_dispatch' && (inputs.branch == 'beta' || inputs.branch == 'dev')
+        run: |
+          tag="v${{ env.info_version_name }}"
+          git tag $tag
+          git push origin $tag
+
       - name: Publish Release
         if: github.event_name == 'workflow_dispatch' && inputs.branch =='main'
         uses: softprops/action-gh-release@v2
         with:
           files: tv/build/outputs/apk/release/*.apk
           make_latest: true
+          tag_name: "v${{ env.info_version_name }}"
 
       - name: Publish Pre-Release
         if: github.event_name == 'workflow_dispatch' && (inputs.branch == 'beta' || inputs.branch == 'dev')
@@ -147,3 +162,4 @@ jobs:
           body: ${{ env.changelog }}
           generate_release_notes: true
           prerelease: true
+          tag_name: "v${{ env.info_version_name }}"    
